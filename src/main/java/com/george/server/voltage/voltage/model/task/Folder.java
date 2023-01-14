@@ -19,10 +19,4 @@ public class Folder {
 
     private String nameFolder;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinTable(name = "folder_tasks",
-            joinColumns = @JoinColumn(name = "folder_id"),
-            inverseJoinColumns = @JoinColumn(name = "tasks_id"))
-    private Set<Task> tasks = new LinkedHashSet<>();
-
 }
