@@ -5,13 +5,14 @@ import com.george.server.voltage.voltage.model.Note;
 import com.george.server.voltage.voltage.repository.NoteRepository;
 import com.george.server.voltage.voltage.utils.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/voltage/note")
+@RequestMapping("/note")
 public class NoteController {
 
     @Autowired
@@ -19,8 +20,8 @@ public class NoteController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveNote(@RequestBody Note note) {
-        noteRepository.save(note);
-        return ResponseEntity.ok(new MessageResponse("Note successfully created!"));
+        Note _note = noteRepository.save(note);
+        return new ResponseEntity<>(_note, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
@@ -30,15 +31,13 @@ public class NoteController {
                 () -> new ResourceNotFoundException("Note with id " + id + " not found")
         );
 
-        int codeUpdate = noteRepository.updateTitleAndDescriptionById(
+        Note _note = noteRepository.updateTitleAndDescriptionById(
                 note.getTitle(),
                 note.getDescription(),
                 id
         );
 
-        return ResponseEntity.ok(
-                new MessageResponse("Note successfully updated with code: " + codeUpdate)
-        );
+        return new ResponseEntity<>(_note, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -49,9 +48,7 @@ public class NoteController {
 
         noteRepository.deleteById(id);
 
-        return ResponseEntity.ok(
-                new MessageResponse("Note successfully deleted")
-        );
+        return new ResponseEntity<>(new MessageResponse("Note successfully deleted"), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")

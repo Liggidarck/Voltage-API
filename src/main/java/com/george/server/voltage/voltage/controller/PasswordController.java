@@ -5,6 +5,7 @@ import com.george.server.voltage.voltage.model.Password;
 import com.george.server.voltage.voltage.repository.PasswordRepository;
 import com.george.server.voltage.voltage.utils.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/voltage/passwords")
+@RequestMapping("/passwords")
 public class PasswordController {
 
     @Autowired
@@ -20,8 +21,8 @@ public class PasswordController {
 
     @PostMapping("/create")
     ResponseEntity<?> createPassword(@RequestBody Password password) {
-        passwordRepository.save(password);
-        return ResponseEntity.ok(new MessageResponse("Password successfully created!"));
+        Password _password = passwordRepository.save(password);
+        return new ResponseEntity<>(_password, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
@@ -31,13 +32,11 @@ public class PasswordController {
                 () -> new ResourceNotFoundException("Password with id " + id + " not found")
         );
 
-        int codeUpdate = passwordRepository.updateUrlAndEmailAndPasswordById(
+        Password _password = passwordRepository.updateUrlAndEmailAndPasswordById(
                 password.getUrl(), password.getEmail(), password.getPassword(), id
         );
 
-        return ResponseEntity.ok(
-                new MessageResponse("Password successfully updated with code: " + codeUpdate)
-        );
+        return new ResponseEntity<>(_password, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
@@ -48,9 +47,7 @@ public class PasswordController {
 
         passwordRepository.deleteById(id);
 
-        return ResponseEntity.ok(
-                new MessageResponse("Password successfully deleted")
-        );
+        return new ResponseEntity<>(new MessageResponse("Password successfully deleted"), HttpStatus.OK);
     }
 
     @GetMapping("/get")
