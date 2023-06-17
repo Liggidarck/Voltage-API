@@ -31,13 +31,13 @@ public class NoteController {
                 () -> new ResourceNotFoundException("Note with id " + id + " not found")
         );
 
-        Note _note = noteRepository.updateTitleAndDescriptionById(
+        int code = noteRepository.updateTitleAndDescriptionById(
                 note.getTitle(),
                 note.getDescription(),
                 id
         );
 
-        return new ResponseEntity<>(_note, HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Note update with code " + code), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
