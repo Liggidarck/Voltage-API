@@ -5,13 +5,14 @@ import com.george.server.voltage.voltage.model.task.Task;
 import com.george.server.voltage.voltage.repository.task.TaskRepository;
 import com.george.server.voltage.voltage.utils.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/voltage/tasks")
+@RequestMapping("/tasks")
 public class TaskController {
 
     @Autowired
@@ -19,8 +20,8 @@ public class TaskController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveTask(@RequestBody Task task) {
-        taskRepository.save(task);
-        return ResponseEntity.ok(new MessageResponse("Task successfully created!"));
+        Task _task = taskRepository.save(task);
+        return new ResponseEntity<>(_task, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
@@ -56,7 +57,7 @@ public class TaskController {
     }
 
 
-    @GetMapping("/get")
+    @GetMapping("/getTasksByFolderId")
     public List<Task> getTaskByFolderId(@RequestParam(value = "id") int id) {
         return taskRepository.getByFolderIdOrderByStatusAsc(id);
     }

@@ -6,13 +6,14 @@ import com.george.server.voltage.voltage.repository.task.FolderRepository;
 import com.george.server.voltage.voltage.repository.task.TaskRepository;
 import com.george.server.voltage.voltage.utils.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/voltage/folders")
+@RequestMapping("/folders")
 public class FolderController {
 
     @Autowired
@@ -22,8 +23,8 @@ public class FolderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> saveFolder(@RequestBody Folder folder) {
-        folderRepository.save(folder);
-        return ResponseEntity.ok(new MessageResponse("Folder successfully created!"));
+        Folder _folder = folderRepository.save(folder);
+        return new ResponseEntity<>(_folder, HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
@@ -48,6 +49,7 @@ public class FolderController {
         );
 
         taskRepository.deleteByFolderId(id);
+        folderRepository.deleteById(id);
 
         return ResponseEntity.ok(
                 new MessageResponse("Folder successfully deleted")
