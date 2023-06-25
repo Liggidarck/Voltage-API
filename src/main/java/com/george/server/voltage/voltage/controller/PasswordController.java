@@ -32,11 +32,11 @@ public class PasswordController {
                 () -> new ResourceNotFoundException("Password with id " + id + " not found")
         );
 
-        Password _password = passwordRepository.updateUrlAndEmailAndPasswordById(
+        int code = passwordRepository.updateUrlAndEmailAndPasswordById(
                 password.getUrl(), password.getEmail(), password.getPassword(), id
         );
 
-        return new ResponseEntity<>(_password, HttpStatus.OK);
+        return new ResponseEntity<>(new MessageResponse("Password update with code: " + code), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")

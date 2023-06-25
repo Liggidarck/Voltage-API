@@ -12,5 +12,5 @@ public interface PasswordRepository extends JpaRepository<Password, Long> {
     @Transactional
     @Modifying
     @Query("update Password p set p.url = ?1, p.email = ?2, p.password = ?3 where p.id = ?4")
-    Password updateUrlAndEmailAndPasswordById(String url, String email, String password, Long id);
+    int updateUrlAndEmailAndPasswordById(String url, String email, String password, Long id);
 }
